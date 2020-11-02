@@ -67,14 +67,16 @@ ITEM_PIPELINES = {
     # 开启pipeline
     'ArticleSpider.pipelines.ArticlespiderPipeline': 300,  # 300表示优先级，数字越小越先执行
     # 让scrapy自动下载文件，图片的设置：https://docs.scrapy.org/en/latest/topics/media-pipeline.html
-    'scrapy.pipelines.images.ImagesPipeline': 1
+    # 'scrapy.pipelines.images.ImagesPipeline': 1
+    # 引入以ImagesPipeline为基类的自定义pipeline，实现显示图片保存路径的功能
+    'ArticleSpider.pipelines.ArticleImagePipeline': 1
 }
 
 # 设置需要提取的图片URL
 IMAGES_URLS_FIELD = "front_image_url"
 
 # 设置图片下载后保存的位置
-project_dir = os.path.abspath(os.path.dirname(__file__))  # C:\Users\jinhong\PycharmProjects\ArticleSpider\ArticleSpider
+project_dir = os.path.dirname(os.path.abspath(__file__))  # C:\..\ArticleSpider\ArticleSpider
 IMAGES_STORE = os.path.join(project_dir, "images")
 
 # Enable and configure the AutoThrottle extension (disabled by default)

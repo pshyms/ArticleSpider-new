@@ -27,7 +27,7 @@ class JobboleSpider(scrapy.Spider):
         # urls = response.css('#news_list h2 a::attr(href)').extract()
 
         # 获取所有的新闻节点块,调试的时候可以后面加上[:1]只得到一个节点
-        post_nodes = response.css('#news_list .news_block')[:1]
+        post_nodes = response.css('#news_list .news_block')[1:2]
         for post_node in post_nodes:
             image_url = post_node.css(".entry_summary img::attr(src)").extract_first("")
             post_url = post_node.css(".news_entry a::attr(href)").extract_first("")
@@ -68,8 +68,8 @@ class JobboleSpider(scrapy.Spider):
             articleItem['content'] = content
             # 获得当前页面的url，直接用response.url
             articleItem['url'] = response.url
-            # 从parse()中得到传递来的字典数据
-            articleItem['front_image_url'] = response.meta.get("front_image_url", "")
+            # 从parse()中得到传递来的字典数据, 图片的地址需要转为列表，否则会报错
+            articleItem['front_image_url'] = [response.meta.get("front_image_url", "")]
 
             yield Request(url=parse.urljoin(response.url, "/NewsAjax/GetAjaxNewsInfo?contentId={}".format(post_id)),
                           meta={"article_item": articleItem}, callback=self.parse_nums)
@@ -82,6 +82,7 @@ class JobboleSpider(scrapy.Spider):
 
         # 从parse_detail中得到传递来的article_item字典数据
         article_item = response.meta.get("article_item", "")
+
         # 对上面三个变量进行赋值
         article_item["praise_num"] = praise_num
         article_item["fav_num"] = fav_num
