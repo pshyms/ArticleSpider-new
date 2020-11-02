@@ -14,7 +14,7 @@ class ArticlespiderPipeline:
         return item
 
 
-# 重写一个pipeline，显示下载图片的路径
+# 重写一个pipeline，显示已下载图片的本地路径
 class ArticleImagePipeline(ImagesPipeline):
     def item_completed(self, results, item, info):
         for ok, value in results:  # 可以在这里打断点查看results, item都有什么值
