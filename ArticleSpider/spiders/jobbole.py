@@ -69,7 +69,26 @@ class JobboleSpider(scrapy.Spider):
             # 获得当前页面的url，直接用response.url
             articleItem['url'] = response.url
             # 从parse()中得到传递来的字典数据, 图片的地址需要转为列表，否则会报错
-            articleItem['front_image_url'] = [response.meta.get("front_image_url", "")]
+            # 如果没有图片，那么值为[""], 会报错。可以做个判断，如果为空，值为[]
+            # if response.meta.get("front_image_url"):
+            #     articleItem['front_image_url'] = response.meta.get("front_image_url")
+            #     """
+            #     https://blog.csdn.net/zhaohaibo_/article/details/104460090
+            #     debug时发现,图片URL地址前面以//开头，没有http或者https，会报下面错误
+            #     ValueError: Missing scheme in request url: //images0.cnblogs.com/news_topic/ITblog.jpg
+            #     所以做个判断，加上https
+            #     """
+            #     if re.match("^(//).*", articleItem['front_image_url']):
+            #         articleItem['front_image_url'] = "https:" + articleItem['front_image_url']
+            #     articleItem['front_image_url'] = [articleItem['front_image_url']]
+            # else:
+            #     articleItem['front_image_url'] = []
+
+            # https://blog.csdn.net/zhaohaibo_/article/details/104460090, 直接使用链接中的方法更简单
+            front_image = response.meta.get("front_image_url", "")
+            if re.match("^(//).*", front_image):
+                front_image = "https:" + front_image
+            articleItem["front_image_url"] = [front_image]  # pipeline下载图片一定要传list
 
             yield Request(url=parse.urljoin(response.url, "/NewsAjax/GetAjaxNewsInfo?contentId={}".format(post_id)),
                           meta={"article_item": articleItem}, callback=self.parse_nums)
