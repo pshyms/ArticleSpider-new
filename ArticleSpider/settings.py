@@ -68,7 +68,7 @@ ITEM_PIPELINES = {
     'ArticleSpider.pipelines.ArticlespiderPipeline': 300,  # 300表示优先级，数字越小越先执行
     # 让scrapy自动下载文件，图片的设置：https://docs.scrapy.org/en/latest/topics/media-pipeline.html
     # 'scrapy.pipelines.images.ImagesPipeline': 1
-    # 引入以ImagesPipeline为基类的自定义pipeline，实现显示图片保存路径的功能
+    # 引入以ImagesPipeline为基类的自定义pipeline，实现显示图片本地保存路径的功能
     'ArticleSpider.pipelines.ArticleImagePipeline': 1
 }
 
